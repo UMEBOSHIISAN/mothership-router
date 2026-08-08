@@ -4,7 +4,6 @@ from __future__ import annotations
 
 import hashlib
 import json
-import re
 from datetime import datetime, timezone
 from typing import Any
 
@@ -18,7 +17,6 @@ _WGM_HANDOFF_KEYS = {
     "token_budget",
     "evidence_references",
 }
-_WINDOWS_ABSOLUTE = re.compile(r"^[A-Za-z]:[\\/]")
 
 
 def registry_digest(registry: object) -> str:
@@ -196,6 +194,10 @@ def _is_non_path_identifier(value: object) -> bool:
     return (
         isinstance(value, str)
         and bool(value)
-        and not value.startswith(("/", "~/"))
-        and _WINDOWS_ABSOLUTE.match(value) is None
+        and not any(
+            character in "/\\"
+            or ord(character) < 0x20
+            or ord(character) == 0x7F
+            for character in value
+        )
     )

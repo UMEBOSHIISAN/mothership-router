@@ -5,7 +5,7 @@
   "protocol_kind": "router-manifest",
   "protocol_version": "1.0",
   "schema_path": "src/mothership_router/schema/router-manifest.1.0.schema.json",
-  "schema_sha256": "d3246cd4e554b61ad219de4743a91f4222fd53453373f4e003b616d665509066",
+  "schema_sha256": "de2183b6ca51afc5da53fd335e3131f403a50d039e17de6fbaa9e538d2233c91",
   "example_path": "examples/router-manifest.json",
   "authority_effect": false,
   "execution_effect": false

@@ -118,20 +118,22 @@ class RouterTests(unittest.TestCase):
         self.assertIsNone(manifest["recommended_alias"])
 
     def test_path_bearing_executor_alias_is_never_emitted(self):
-        registry = {
-            "executors": [
-                {
-                    "alias": "/Users/example/private-worker",
-                    "status": "ready",
-                    "capabilities": ["review"],
-                    "max_risk": "medium",
-                    "cost_rank": 1,
+        for private_path in self.unsafe_identifiers():
+            with self.subTest(private_path=private_path):
+                registry = {
+                    "executors": [
+                        {
+                            "alias": private_path,
+                            "status": "ready",
+                            "capabilities": ["review"],
+                            "max_risk": "medium",
+                            "cost_rank": 1,
+                        }
+                    ]
                 }
-            ]
-        }
-        manifest = advisory_route(TASK, registry, now=NOW)
-        self.assertEqual(manifest["status"], "no_ready_executor")
-        self.assertNotIn("/Users/example", json.dumps(manifest))
+                manifest = advisory_route(TASK, registry, now=NOW)
+                self.assertEqual(manifest["status"], "no_ready_executor")
+                self.assertNotIn(private_path, json.dumps(manifest))
 
     def test_cli_reads_only_two_json_inputs(self):
         with tempfile.TemporaryDirectory() as directory:
@@ -159,11 +161,7 @@ class RouterTests(unittest.TestCase):
         self.assertIn("wgm_handoff_contains_unsupported_fields", manifest["reasons"])
 
     def test_public_wgm_handoff_rejects_path_bearing_identifiers(self):
-        for private_path in (
-            "/Users/example/private.json",
-            "~/private.json",
-            r"C:\Users\example\private.json",
-        ):
+        for private_path in self.unsafe_identifiers():
             for field in ("task_id", "capability"):
                 with self.subTest(field=field, private_path=private_path):
                     manifest = advisory_route(
@@ -179,6 +177,21 @@ class RouterTests(unittest.TestCase):
                 )
                 self.assertEqual(manifest["status"], "invalid_input")
                 self.assertNotIn(private_path, json.dumps(manifest))
+
+    @staticmethod
+    def unsafe_identifiers():
+        return (
+            "/Users/example/private.json",
+            "~/private.json",
+            r"C:\Users\example\private.json",
+            r"\\server\share\private.json",
+            r"\\?\C:\private.json",
+            r"~\private.json",
+            "../private.json",
+            "private/path.json",
+            "private\nvalue",
+            "private\x7fvalue",
+        )
 
     def test_invalid_identity_values_are_null_not_stringified(self):
         manifest = advisory_route(

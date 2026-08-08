@@ -36,9 +36,19 @@ credential, or convert a recommendation into execution authority.
 
 | Producer | Contract | Consumer | Supported |
 | --- | --- | --- | --- |
-| WGM 0.2.x | `workflow-handoff` 1.0 | Mothership Router 0.2.x | Yes |
+| WGM 0.2.x | `workflow-handoff` 1.0 | Mothership Router 0.3.x | Yes |
 | Arbitrary JSON | Unknown fields or embedded authority | Mothership Router | Rejected |
-| Mothership Router manifest | Read-only inspection | Mothership 0.1.x diagnostics | Documented composition only |
+| Mothership Router 0.3.x | `router-manifest` 1.0 | Mothership 0.2.x suite | Yes, shape/version conformance |
+
+Router is the semantic owner of `router-manifest` 1.0. Mothership freezes the
+exact owner schema bytes for reproducible cross-repository checks; it does not
+redefine Router's status or approval semantics. The public example uses the
+shared synthetic task ID `demo-review-001` and capability `code-review`.
+
+Consumers of the former unversioned Router object that ignore unknown fields
+remain source-compatible with 0.3.x. Consumers that compare exact object shape
+must opt into the closed 1.0 schema because `schema_version`, `task_id`, and
+`capability` are now required.
 
 All repositories remain independently installable. No package automatically
 discovers or imports another one.

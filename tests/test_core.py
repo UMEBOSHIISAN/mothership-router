@@ -28,6 +28,51 @@ REGISTRY = {
 
 
 class RouterTests(unittest.TestCase):
+    def assert_manifest_identity(self, manifest, *, task_id, capability):
+        self.assertEqual(
+            set(manifest),
+            {
+                "schema_version",
+                "task_id",
+                "capability",
+                "status",
+                "recommended_alias",
+                "registry_sha256",
+                "reasons",
+                "authority_effect",
+                "execution_effect",
+            },
+        )
+        self.assertEqual(manifest["schema_version"], "1.0")
+        self.assertEqual(manifest["task_id"], task_id)
+        self.assertEqual(manifest["capability"], capability)
+
+    def test_every_production_branch_has_the_versioned_manifest_shape(self):
+        approval = {
+            "event": "approve",
+            "approver_class": "human",
+            "alias": "local-review",
+            "registry_sha256": registry_digest(REGISTRY),
+            "expires_at": "2026-08-09T00:00:00Z",
+        }
+        cases = [
+            (advisory_route([], REGISTRY, now=NOW), None, None),
+            (
+                advisory_route({**WGM_HANDOFF, "command": "false"}, REGISTRY, now=NOW),
+                "review-20260808-001",
+                "review",
+            ),
+            (advisory_route({"capability": [], "risk": "low"}, REGISTRY, now=NOW), None, None),
+            (advisory_route({"capability": "review", "risk": "high"}, REGISTRY, now=NOW), None, "review"),
+            (advisory_route(TASK, {}, now=NOW), None, "review"),
+            (advisory_route(TASK, {"executors": []}, now=NOW), None, "review"),
+            (advisory_route(TASK, REGISTRY, now=NOW), None, "review"),
+            (advisory_route(WGM_HANDOFF, REGISTRY, approval, now=NOW), "review-20260808-001", "review"),
+        ]
+        for manifest, task_id, capability in cases:
+            with self.subTest(status=manifest["status"]):
+                self.assert_manifest_identity(manifest, task_id=task_id, capability=capability)
+
     def test_high_risk_requires_human_review(self):
         manifest = advisory_route({"capability": "review", "risk": "high"}, REGISTRY, now=NOW)
         self.assertEqual(manifest["status"], "human_review_required")
@@ -56,6 +101,22 @@ class RouterTests(unittest.TestCase):
         registry = {"executors": [REGISTRY["executors"][1]]}
         self.assertEqual(advisory_route(TASK, registry, now=NOW)["status"], "no_ready_executor")
 
+    def test_malformed_ready_executor_is_never_emitted(self):
+        malformed = {
+            "executors": [
+                {
+                    "alias": None,
+                    "status": "ready",
+                    "capabilities": ["review"],
+                    "max_risk": "medium",
+                    "cost_rank": True,
+                }
+            ]
+        }
+        manifest = advisory_route(TASK, malformed, now=NOW)
+        self.assertEqual(manifest["status"], "no_ready_executor")
+        self.assertIsNone(manifest["recommended_alias"])
+
     def test_cli_reads_only_two_json_inputs(self):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
@@ -68,6 +129,8 @@ class RouterTests(unittest.TestCase):
 
     def test_public_wgm_handoff_routes_as_reviewed_metadata(self):
         manifest = advisory_route(WGM_HANDOFF, REGISTRY, now=NOW)
+        self.assertEqual(manifest["task_id"], WGM_HANDOFF["task_id"])
+        self.assertEqual(manifest["capability"], WGM_HANDOFF["capability"])
         self.assertEqual(manifest["status"], "approval_required")
         self.assertEqual(manifest["recommended_alias"], "local-review")
         self.assertFalse(manifest["authority_effect"])
@@ -78,6 +141,16 @@ class RouterTests(unittest.TestCase):
         manifest = advisory_route(handoff, REGISTRY, now=NOW)
         self.assertEqual(manifest["status"], "invalid_input")
         self.assertIn("wgm_handoff_contains_unsupported_fields", manifest["reasons"])
+
+    def test_invalid_identity_values_are_null_not_stringified(self):
+        manifest = advisory_route(
+            {"task_id": ["not", "an", "id"], "capability": {"not": "a string"}, "risk": "low"},
+            REGISTRY,
+            now=NOW,
+        )
+        self.assertEqual(manifest["status"], "invalid_input")
+        self.assertIsNone(manifest["task_id"])
+        self.assertIsNone(manifest["capability"])
 
 
 if __name__ == "__main__":

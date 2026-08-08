@@ -4,13 +4,19 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "mothership-router"
-version = "0.2.0"
+version = "0.3.0"
 description = "Human-gated dry-run routing for AI coding environments"
 requires-python = ">=3.12"
 license = {text = "MIT"}
+
+[project.optional-dependencies]
+test = ["jsonschema>=4.23,<5"]
 
 [tool.setuptools]
 package-dir = {"" = "src"}
 
 [tool.setuptools.packages.find]
 where = ["src"]
+
+[tool.setuptools.package-data]
+mothership_router = ["schema/*.json"]

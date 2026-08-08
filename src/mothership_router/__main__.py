@@ -15,10 +15,10 @@ def main(argv: list[str] | None = None) -> int:
     try:
         task = json.loads(Path(values[0]).read_text(encoding="utf-8"))
         registry = json.loads(Path(values[1]).read_text(encoding="utf-8"))
-    except (OSError, json.JSONDecodeError) as error:
-        print(f"input_error: {error}", file=sys.stderr)
+    except (OSError, UnicodeError, json.JSONDecodeError):
+        print("input_error: unable to read valid JSON inputs", file=sys.stderr)
         return 2
-    print(json.dumps(advisory_route(task, registry), sort_keys=True))
+    print(json.dumps(advisory_route(task, registry), sort_keys=True, separators=(",", ":")))
     return 0
 
 

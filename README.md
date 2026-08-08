@@ -27,7 +27,9 @@ PYTHONPATH=src python3 -m mothership_router examples/task.json examples/registry
 ```
 
 The command reads JSON and prints an advisory dry-run manifest. It does not
-launch a process.
+launch a process. Router 0.3.0 emits the closed `router-manifest` 1.0 object;
+its JSON Schema is packaged with the library at
+`mothership_router/schema/router-manifest.1.0.schema.json`.
 
 To pass the public WGM handoff directly:
 
@@ -93,7 +95,7 @@ Mothership supplies the portable environment contracts and diagnostic context.
 Each project can also be used independently.
 
 See [the composition walkthrough](docs/composition.md) for the local-file-only
-WGM 0.2.x → Mothership Router 0.2.x handoff.
+WGM 0.2.x → Mothership Router 0.3.x handoff.
 
 ## Status values
 
@@ -105,6 +107,24 @@ WGM 0.2.x → Mothership Router 0.2.x handoff.
 | `approved_dry_run` | Approval is valid; inspect the manifest and act manually outside this package. |
 
 Every result has `authority_effect: false` and `execution_effect: false`.
+Every 1.0 result also carries `schema_version`, a nullable `task_id`, and a
+nullable `capability`. A validated WGM handoff preserves its identity. The
+legacy two-field task form preserves a valid capability but emits a null task
+ID because that form has no versioned identity contract.
+
+## Mothership conformance
+
+Router owns the semantics and exact bytes of `router-manifest` 1.0. The
+[`suite/mothership-0.2-conformance.json`](suite/mothership-0.2-conformance.json)
+manifest binds that schema digest to a synthetic, credential-free example.
+[Mothership 0.2](https://github.com/UMEBOSHIISAN/mothership) freezes those owner
+bytes and checks them as one step in its optional companion chain. Conformance
+proves shape, version, and false effects; it does not prove approval, execution,
+freshness, or publication.
+
+The 0.3.0 output adds required fields to the former unversioned object. Readers
+that already ignored unknown fields remain source-compatible. Exact-shape
+readers must deliberately select `router-manifest` 1.0.
 
 ## Relationship to the ecosystem
 
@@ -129,6 +149,13 @@ uses the standard library only.
 ```sh
 python3 -m pip install -e .
 python3 -m unittest discover -s tests -v
+```
+
+Schema conformance tests use the optional test extra; runtime remains standard
+library only:
+
+```sh
+python3 -m pip install -e '.[test]'
 ```
 
 The clean-environment verification procedure is:

@@ -6,6 +6,7 @@
 - Preserve validated WGM task identity while keeping legacy task IDs null.
 - Package the owner JSON Schema and add Mothership 0.2 conformance evidence.
 - Emit canonical compact CLI JSON and fixed, path-free input errors.
+- Correct clean-environment test setup and refresh tracked source checksums.
 
 ## 0.2.0 — 2026-08-08
 

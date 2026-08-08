@@ -147,22 +147,18 @@ Requires Python 3.12 or newer for the published package. The implementation
 uses the standard library only.
 
 ```sh
-python3 -m pip install -e .
+python3 -m pip install -e '.[test]'
 python3 -m unittest discover -s tests -v
 ```
 
-Schema conformance tests use the optional test extra; runtime remains standard
-library only:
-
-```sh
-python3 -m pip install -e '.[test]'
-```
+Schema conformance tests require the optional test extra; the installed runtime
+remains standard-library only.
 
 The clean-environment verification procedure is:
 
 ```sh
 python3 -m venv .venv
-.venv/bin/python -m pip install --no-deps -e .
+.venv/bin/python -m pip install -e '.[test]'
 .venv/bin/python -m unittest discover -s tests -v
 ```
 

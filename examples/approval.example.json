@@ -1,0 +1,7 @@
+{
+  "event": "approve",
+  "approver_class": "human",
+  "alias": "replace-with-an-exact-ready-alias",
+  "registry_sha256": "replace-with-the-current-registry-digest",
+  "expires_at": "2026-12-31T23:59:59Z"
+}

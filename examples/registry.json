@@ -1,0 +1,11 @@
+{
+  "executors": [
+    {
+      "alias": "example-reviewer",
+      "status": "staged",
+      "capabilities": ["code-review"],
+      "max_risk": "medium",
+      "cost_rank": 1
+    }
+  ]
+}

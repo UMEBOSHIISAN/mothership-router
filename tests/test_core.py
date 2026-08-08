@@ -11,6 +11,14 @@ from mothership_router.core import advisory_route, registry_digest
 
 NOW = datetime(2026, 8, 8, tzinfo=timezone.utc)
 TASK = {"capability": "review", "risk": "low"}
+WGM_HANDOFF = {
+    "schema_version": "1.0",
+    "task_id": "review-20260808-001",
+    "capability": "review",
+    "risk": "low",
+    "token_budget": 4000,
+    "evidence_references": ["evidence:design-note-v1"],
+}
 REGISTRY = {
     "executors": [
         {"alias": "local-review", "status": "ready", "capabilities": ["review"], "max_risk": "medium", "cost_rank": 1},
@@ -57,6 +65,19 @@ class RouterTests(unittest.TestCase):
             registry.write_text(json.dumps({"executors": []}), encoding="utf-8")
             result = subprocess.run([sys.executable, "-m", "mothership_router", str(task), str(registry)], text=True, capture_output=True, check=True)
         self.assertEqual(json.loads(result.stdout)["status"], "no_ready_executor")
+
+    def test_public_wgm_handoff_routes_as_reviewed_metadata(self):
+        manifest = advisory_route(WGM_HANDOFF, REGISTRY, now=NOW)
+        self.assertEqual(manifest["status"], "approval_required")
+        self.assertEqual(manifest["recommended_alias"], "local-review")
+        self.assertFalse(manifest["authority_effect"])
+        self.assertFalse(manifest["execution_effect"])
+
+    def test_public_wgm_handoff_rejects_authority_fields(self):
+        handoff = {**WGM_HANDOFF, "execution_permission": "approved"}
+        manifest = advisory_route(handoff, REGISTRY, now=NOW)
+        self.assertEqual(manifest["status"], "invalid_input")
+        self.assertIn("wgm_handoff_contains_unsupported_fields", manifest["reasons"])
 
 
 if __name__ == "__main__":

@@ -9,6 +9,14 @@ from typing import Any
 
 
 _RISK = {"low": 0, "medium": 1, "high": 2}
+_WGM_HANDOFF_KEYS = {
+    "schema_version",
+    "task_id",
+    "capability",
+    "risk",
+    "token_budget",
+    "evidence_references",
+}
 
 
 def registry_digest(registry: object) -> str:
@@ -25,6 +33,10 @@ def advisory_route(
     """Return a dry-run manifest; never starts a command or changes state."""
     if not isinstance(task, dict) or not isinstance(registry, dict):
         return _manifest("invalid_input", None, None, ["task_and_registry_must_be_objects"])
+    if "schema_version" in task:
+        handoff_error = _validate_wgm_handoff(task)
+        if handoff_error:
+            return _manifest("invalid_input", None, None, [handoff_error])
     risk = task.get("risk")
     capability = task.get("capability")
     if risk not in _RISK or not isinstance(capability, str):
@@ -71,3 +83,23 @@ def _valid_approval(
         return False
     current = now or datetime.now(timezone.utc)
     return expiry > current.astimezone(timezone.utc)
+
+
+def _validate_wgm_handoff(task: dict[str, object]) -> str | None:
+    if set(task) - _WGM_HANDOFF_KEYS:
+        return "wgm_handoff_contains_unsupported_fields"
+    if set(task) != _WGM_HANDOFF_KEYS:
+        return "wgm_handoff_requires_all_public_fields"
+    if task.get("schema_version") != "1.0":
+        return "wgm_handoff_requires_schema_version_1_0"
+    if not isinstance(task.get("task_id"), str) or not task["task_id"]:
+        return "wgm_handoff_requires_task_id"
+    budget = task.get("token_budget")
+    if not isinstance(budget, int) or isinstance(budget, bool) or budget < 1:
+        return "wgm_handoff_requires_positive_token_budget"
+    references = task.get("evidence_references")
+    if not isinstance(references, list) or not references or any(
+        not isinstance(value, str) or not value for value in references
+    ):
+        return "wgm_handoff_requires_evidence_references"
+    return None

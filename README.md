@@ -29,6 +29,18 @@ PYTHONPATH=src python3 -m mothership_router examples/task.json examples/registry
 The command reads JSON and prints an advisory dry-run manifest. It does not
 launch a process.
 
+To pass the public WGM handoff directly:
+
+```sh
+PYTHONPATH=src python3 -m mothership_router \
+  examples/wgm-handoff.json examples/registry.json
+```
+
+When `schema_version` identifies a WGM handoff, Router requires the complete
+public field set and rejects every unknown field. This prevents embedded
+credentials, prompts, local paths, or claimed execution permission from being
+silently carried across the boundary.
+
 ## Input contract
 
 `TASK.json` is a small request object:
@@ -80,6 +92,9 @@ that review when you need a deterministic candidate from a local registry.
 Mothership supplies the portable environment contracts and diagnostic context.
 Each project can also be used independently.
 
+See [the composition walkthrough](docs/composition.md) for the local-file-only
+WGM 0.2.x → Mothership Router 0.2.x handoff.
+
 ## Status values
 
 | Status | Meaning |
@@ -114,6 +129,14 @@ uses the standard library only.
 ```sh
 python3 -m pip install -e .
 python3 -m unittest discover -s tests -v
+```
+
+The clean-environment verification procedure is:
+
+```sh
+python3 -m venv .venv
+.venv/bin/python -m pip install --no-deps -e .
+.venv/bin/python -m unittest discover -s tests -v
 ```
 
 ## License

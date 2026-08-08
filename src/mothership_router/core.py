@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import re
 from datetime import datetime, timezone
 from typing import Any
 
@@ -17,6 +18,7 @@ _WGM_HANDOFF_KEYS = {
     "token_budget",
     "evidence_references",
 }
+_WINDOWS_ABSOLUTE = re.compile(r"^[A-Za-z]:[\\/]")
 
 
 def registry_digest(registry: object) -> str:
@@ -79,8 +81,7 @@ def advisory_route(
         for row in candidates
         if isinstance(row, dict)
         and row.get("status") == "ready"
-        and isinstance(row.get("alias"), str)
-        and bool(row["alias"])
+        and _is_non_path_identifier(row.get("alias"))
         and isinstance(row.get("capabilities"), list)
         and capability in row["capabilities"]
         and row.get("max_risk") in _RISK
@@ -115,11 +116,11 @@ def _task_identity(task: object) -> tuple[str | None, str | None]:
     if not isinstance(task, dict):
         return None, None
     capability = task.get("capability")
-    safe_capability = capability if isinstance(capability, str) and capability else None
+    safe_capability = capability if _is_non_path_identifier(capability) else None
     if "schema_version" not in task:
         return None, safe_capability
     task_id = task.get("task_id")
-    safe_task_id = task_id if isinstance(task_id, str) and task_id else None
+    safe_task_id = task_id if _is_non_path_identifier(task_id) else None
     return safe_task_id, safe_capability
 
 
@@ -176,14 +177,25 @@ def _validate_wgm_handoff(task: dict[str, object]) -> str | None:
         return "wgm_handoff_requires_all_public_fields"
     if task.get("schema_version") != "1.0":
         return "wgm_handoff_requires_schema_version_1_0"
-    if not isinstance(task.get("task_id"), str) or not task["task_id"]:
-        return "wgm_handoff_requires_task_id"
+    if not _is_non_path_identifier(task.get("task_id")):
+        return "wgm_handoff_requires_non_path_task_id"
+    if not _is_non_path_identifier(task.get("capability")):
+        return "wgm_handoff_requires_non_path_capability"
     budget = task.get("token_budget")
     if not isinstance(budget, int) or isinstance(budget, bool) or budget < 1:
         return "wgm_handoff_requires_positive_token_budget"
     references = task.get("evidence_references")
     if not isinstance(references, list) or not references or any(
-        not isinstance(value, str) or not value for value in references
+        not _is_non_path_identifier(value) for value in references
     ):
-        return "wgm_handoff_requires_evidence_references"
+        return "wgm_handoff_requires_non_path_evidence_references"
     return None
+
+
+def _is_non_path_identifier(value: object) -> bool:
+    return (
+        isinstance(value, str)
+        and bool(value)
+        and not value.startswith(("/", "~/"))
+        and _WINDOWS_ABSOLUTE.match(value) is None
+    )

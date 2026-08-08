@@ -117,6 +117,22 @@ class RouterTests(unittest.TestCase):
         self.assertEqual(manifest["status"], "no_ready_executor")
         self.assertIsNone(manifest["recommended_alias"])
 
+    def test_path_bearing_executor_alias_is_never_emitted(self):
+        registry = {
+            "executors": [
+                {
+                    "alias": "/Users/example/private-worker",
+                    "status": "ready",
+                    "capabilities": ["review"],
+                    "max_risk": "medium",
+                    "cost_rank": 1,
+                }
+            ]
+        }
+        manifest = advisory_route(TASK, registry, now=NOW)
+        self.assertEqual(manifest["status"], "no_ready_executor")
+        self.assertNotIn("/Users/example", json.dumps(manifest))
+
     def test_cli_reads_only_two_json_inputs(self):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
@@ -141,6 +157,28 @@ class RouterTests(unittest.TestCase):
         manifest = advisory_route(handoff, REGISTRY, now=NOW)
         self.assertEqual(manifest["status"], "invalid_input")
         self.assertIn("wgm_handoff_contains_unsupported_fields", manifest["reasons"])
+
+    def test_public_wgm_handoff_rejects_path_bearing_identifiers(self):
+        for private_path in (
+            "/Users/example/private.json",
+            "~/private.json",
+            r"C:\Users\example\private.json",
+        ):
+            for field in ("task_id", "capability"):
+                with self.subTest(field=field, private_path=private_path):
+                    manifest = advisory_route(
+                        {**WGM_HANDOFF, field: private_path}, REGISTRY, now=NOW
+                    )
+                    self.assertEqual(manifest["status"], "invalid_input")
+                    self.assertNotIn(private_path, json.dumps(manifest))
+            with self.subTest(field="evidence_references", private_path=private_path):
+                manifest = advisory_route(
+                    {**WGM_HANDOFF, "evidence_references": [private_path]},
+                    REGISTRY,
+                    now=NOW,
+                )
+                self.assertEqual(manifest["status"], "invalid_input")
+                self.assertNotIn(private_path, json.dumps(manifest))
 
     def test_invalid_identity_values_are_null_not_stringified(self):
         manifest = advisory_route(

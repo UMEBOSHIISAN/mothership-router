@@ -9,6 +9,8 @@
 - Correct clean-environment test setup and refresh tracked source checksums.
 - Define WGM identifiers, executor aliases, and manifest reasons as portable
   ASCII tokens with the same true-end grammar in runtime and JSON Schema.
+- Prefer the explicitly versioned WGM handoff 1.1 while retaining safe 1.0
+  recognition under Router's stricter consumer-boundary policy.
 
 ## 0.2.0 — 2026-08-08
 

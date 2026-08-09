@@ -31,20 +31,22 @@ launch a process. Router 0.3.0 emits the closed `router-manifest` 1.0 object;
 its JSON Schema is packaged with the library at
 `mothership_router/schema/router-manifest.1.0.schema.json`.
 
-To pass the public WGM handoff directly:
+To pass the portable public WGM 1.1 handoff directly:
 
 ```sh
 PYTHONPATH=src python3 -m mothership_router \
   examples/wgm-handoff.json examples/registry.json
 ```
 
-When `schema_version` identifies a WGM handoff, Router requires the complete
+When `schema_version` identifies a supported WGM 1.0 or 1.1 handoff, Router requires the complete
 public field set and rejects every unknown field. This prevents embedded
 credentials, prompts, local-path fields, path-bearing public identifiers, or
 claimed execution permission from being silently carried across the boundary.
 Those public identifiers use one portable ASCII token grammar: an alphanumeric
 first character followed by alphanumerics, `.`, `_`, `:`, or `-`, with
-drive-relative `X:` prefixes rejected.
+drive-relative `X:` prefixes rejected. New producers should select WGM 1.1;
+1.0 remains recognized for compatibility but Router still applies its own
+fail-closed identifier policy at the consumer boundary.
 
 ## Input contract
 

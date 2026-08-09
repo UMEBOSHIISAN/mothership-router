@@ -16,7 +16,7 @@ from mothership_router.core import advisory_route, registry_digest
 ROOT = Path(__file__).resolve().parents[1]
 NOW = datetime(2026, 8, 8, tzinfo=timezone.utc)
 WGM_HANDOFF = {
-    "schema_version": "1.0",
+    "schema_version": "1.1",
     "task_id": "demo-review-001",
     "capability": "code-review",
     "risk": "low",

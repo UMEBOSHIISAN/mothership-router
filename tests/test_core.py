@@ -12,7 +12,7 @@ from mothership_router.core import advisory_route, registry_digest
 NOW = datetime(2026, 8, 8, tzinfo=timezone.utc)
 TASK = {"capability": "review", "risk": "low"}
 WGM_HANDOFF = {
-    "schema_version": "1.0",
+    "schema_version": "1.1",
     "task_id": "review-20260808-001",
     "capability": "review",
     "risk": "low",
@@ -151,6 +151,11 @@ class RouterTests(unittest.TestCase):
         self.assertEqual(manifest["capability"], WGM_HANDOFF["capability"])
         self.assertEqual(manifest["status"], "approval_required")
         self.assertEqual(manifest["recommended_alias"], "local-review")
+
+    def test_legacy_wgm_1_0_is_still_recognized_with_router_safety_policy(self):
+        manifest = advisory_route({**WGM_HANDOFF, "schema_version": "1.0"}, REGISTRY, now=NOW)
+        self.assertEqual(manifest["status"], "approval_required")
+        self.assertEqual(manifest["task_id"], WGM_HANDOFF["task_id"])
         self.assertFalse(manifest["authority_effect"])
         self.assertFalse(manifest["execution_effect"])
 

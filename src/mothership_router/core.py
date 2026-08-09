@@ -173,8 +173,8 @@ def _validate_wgm_handoff(task: dict[str, object]) -> str | None:
         return "wgm_handoff_contains_unsupported_fields"
     if set(task) != _WGM_HANDOFF_KEYS:
         return "wgm_handoff_requires_all_public_fields"
-    if task.get("schema_version") != "1.0":
-        return "wgm_handoff_requires_schema_version_1_0"
+    if task.get("schema_version") not in {"1.0", "1.1"}:
+        return "wgm_handoff_requires_supported_schema_version"
     if not _is_non_path_identifier(task.get("task_id")):
         return "wgm_handoff_requires_non_path_task_id"
     if not _is_non_path_identifier(task.get("capability")):

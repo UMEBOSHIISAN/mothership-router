@@ -7,7 +7,7 @@
 
 <p align="center">
   <img alt="python" src="https://img.shields.io/badge/python-3.12%2B-3776ab">
-  <img alt="tests" src="https://img.shields.io/badge/tests-19%20passing-16a34a">
+  <img alt="tests" src="https://img.shields.io/badge/tests-20%20passing-16a34a">
   <img alt="dependencies" src="https://img.shields.io/badge/dependencies-stdlib%20only-5fd3d3">
   <img alt="execution" src="https://img.shields.io/badge/execution-none-e06a6a">
   <img alt="network" src="https://img.shields.io/badge/network-none-e06a6a">

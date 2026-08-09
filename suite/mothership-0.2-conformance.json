@@ -1,0 +1,12 @@
+{
+  "schema_version": "mothership.conformance.v1",
+  "suite_release": "0.2.0",
+  "repository": "mothership-router",
+  "protocol_kind": "router-manifest",
+  "protocol_version": "1.0",
+  "schema_path": "src/mothership_router/schema/router-manifest.1.0.schema.json",
+  "schema_sha256": "273b1def57ec35957750c4979c737480c4cbb7f4db2294993dd5475b54fc673b",
+  "example_path": "examples/router-manifest.json",
+  "authority_effect": false,
+  "execution_effect": false
+}

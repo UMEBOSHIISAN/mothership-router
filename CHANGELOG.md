@@ -1,5 +1,19 @@
 # Changelog
 
+## 0.3.0 — 2026-08-09
+
+- Version every dry-run result as the closed `router-manifest` 1.0 protocol.
+- Preserve validated WGM task identity while keeping legacy task IDs null.
+- Package the owner JSON Schema and add Mothership 0.2 conformance evidence.
+- Emit canonical compact CLI JSON and fixed, path-free input errors.
+- Correct clean-environment test setup and refresh tracked source checksums.
+- Define WGM identifiers, executor aliases, and manifest reasons as portable
+  ASCII tokens with the same true-end grammar in runtime and JSON Schema.
+- Prefer the explicitly versioned WGM handoff 1.1 while retaining safe 1.0
+  recognition under Router's stricter consumer-boundary policy.
+- Reject array or object values in risk and schema-version fields as invalid
+  input instead of raising on otherwise valid JSON.
+
 ## 0.2.0 — 2026-08-08
 
 - Accept the WGM 0.2 public handoff as reviewed task metadata.

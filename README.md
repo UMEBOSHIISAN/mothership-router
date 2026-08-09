@@ -7,7 +7,7 @@
 
 <p align="center">
   <img alt="python" src="https://img.shields.io/badge/python-3.12%2B-3776ab">
-  <img alt="tests" src="https://img.shields.io/badge/tests-8%20passing-16a34a">
+  <img alt="tests" src="https://img.shields.io/badge/tests-19%20passing-16a34a">
   <img alt="dependencies" src="https://img.shields.io/badge/dependencies-stdlib%20only-5fd3d3">
   <img alt="execution" src="https://img.shields.io/badge/execution-none-e06a6a">
   <img alt="network" src="https://img.shields.io/badge/network-none-e06a6a">
@@ -89,6 +89,9 @@ The last two lines differ by nothing except the digest inside the approval objec
 
 ```json
 {
+  "schema_version": "1.0",
+  "task_id": null,
+  "capability": "code-review",
   "status": "approved_dry_run",
   "recommended_alias": "local-reviewer",
   "registry_sha256": "e41861ea7be2f70c…",
@@ -109,19 +112,38 @@ Python **3.12+**, standard library only.
 ```sh
 git clone https://github.com/UMEBOSHIISAN/mothership-router.git
 cd mothership-router
-PYTHONPATH=src python3 -m unittest discover -s tests -v          # 8 tests
-PYTHONPATH=src python3 -m mothership_router examples/task.json examples/registry.json
+python3 -m venv .venv
+.venv/bin/python -m pip install -e '.[test]'
+PYTHONPATH=src .venv/bin/python -m unittest discover -s tests -v  # 19 tests
+PYTHONPATH=src .venv/bin/python -m mothership_router examples/task.json examples/registry.json
 ```
 
-The shipped `examples/registry.json` contains only a `staged` entry, so a fresh clone safely prints `no_ready_executor`. **Registries begin with nothing ready.** That is intentional: the first run of a routing tool should not be able to recommend anything.
+The shipped `examples/registry.json` contains only a `staged` entry, so a fresh
+clone safely prints `no_ready_executor`. **Registries begin with nothing ready.**
+That is intentional: the first run of a routing tool should not be able to
+recommend anything.
 
-To pass a public WGM handoff directly:
+The command reads JSON and prints an advisory dry-run manifest. It does not
+launch a process. Router 0.3.0 emits the closed `router-manifest` 1.0 object;
+its JSON Schema is packaged with the library at
+`mothership_router/schema/router-manifest.1.0.schema.json`.
+
+To pass the portable public WGM 1.1 handoff directly:
 
 ```sh
-PYTHONPATH=src python3 -m mothership_router examples/wgm-handoff.json examples/registry.json
+PYTHONPATH=src .venv/bin/python -m mothership_router examples/wgm-handoff.json examples/registry.json
 ```
 
-When `schema_version` identifies a WGM handoff, Router requires the complete public field set and rejects every unknown field — so embedded credentials, prompts, local paths, or claimed execution permission cannot ride across the boundary unnoticed.
+When `schema_version` identifies a supported WGM 1.0 or 1.1 handoff, Router
+requires the complete public field set and rejects every unknown field. This
+prevents embedded
+credentials, prompts, local-path fields, path-bearing public identifiers, or
+claimed execution permission from being silently carried across the boundary.
+Those public identifiers use one portable ASCII token grammar: an alphanumeric
+first character followed by alphanumerics, `.`, `_`, `:`, or `-`, with
+drive-relative `X:` prefixes rejected. New producers should select WGM 1.1;
+1.0 remains recognized for compatibility but Router still applies its own
+fail-closed identifier policy at the consumer boundary.
 
 ### Reaching `approved_dry_run`
 
@@ -197,7 +219,49 @@ Mothership contracts / separately configured local tools
 
 Use [Workflow Governance Model](https://github.com/UMEBOSHIISAN/workflow-governance-model) first when a workflow needs evidence, claim strength, approval, and receipt checks. Use Mothership Router after that review, when you need a deterministic candidate from a local registry. [Mothership](https://github.com/UMEBOSHIISAN/mothership) supplies the portable environment contracts and diagnostics around both.
 
-Each project is independently adoptable. See the [composition walkthrough](docs/composition.md) for the local-file-only WGM 0.2.x → Router 0.2.x handoff.
+See [the composition walkthrough](docs/composition.md) for the local-file-only
+WGM 0.2.x → Mothership Router 0.3.x handoff.
+
+## Status values
+
+| Status | Meaning |
+| --- | --- |
+| `human_review_required` | High-risk input is deliberately not routed. |
+| `no_ready_executor` | No explicit ready local entry matches. |
+| `approval_required` | A candidate exists, but no valid current human approval exists. |
+| `approved_dry_run` | Approval is valid; inspect the manifest and act manually outside this package. |
+
+Every result has `authority_effect: false` and `execution_effect: false`.
+Every 1.0 result also carries `schema_version`, a nullable `task_id`, and a
+nullable `capability`. A validated WGM handoff preserves its identity. The
+legacy two-field task form preserves a valid capability but emits a null task
+ID because that form has no versioned identity contract.
+
+## Mothership conformance
+
+Router owns the semantics and exact bytes of `router-manifest` 1.0. The
+[`suite/mothership-0.2-conformance.json`](suite/mothership-0.2-conformance.json)
+manifest binds that schema digest to a synthetic, credential-free example.
+[Mothership 0.2](https://github.com/UMEBOSHIISAN/mothership) freezes those owner
+bytes and checks them as one step in its optional companion chain. Conformance
+proves shape, version, and false effects; it does not prove approval, execution,
+freshness, or publication.
+
+The 0.3.0 output adds required fields to the former unversioned object. Readers
+that already ignored unknown fields remain source-compatible. Exact-shape
+readers must deliberately select `router-manifest` 1.0.
+
+## Relationship to the ecosystem
+
+- [Workflow Governance Model](https://github.com/UMEBOSHIISAN/workflow-governance-model)
+  validates evidence and authority trails before routing.
+- [Mothership](https://github.com/UMEBOSHIISAN/mothership) provides portable
+  contracts, diagnostics, and configuration boundaries.
+- Mothership Router is the optional handoff point between a reviewed request
+  and a separately configured local execution system.
+
+Each project is independently adoptable. None installs, configures, or invokes
+another.
 
 ---
 
@@ -211,9 +275,22 @@ Each project is independently adoptable. See the [composition walkthrough](docs/
 
 ## Development
 
+Requires Python 3.12 or newer for the published package. The implementation
+uses the standard library only.
+
+```sh
+python3 -m pip install -e '.[test]'
+python3 -m unittest discover -s tests -v
+```
+
+Schema conformance tests require the optional test extra; the installed runtime
+remains standard-library only.
+
+The clean-environment verification procedure is:
+
 ```sh
 python3 -m venv .venv
-.venv/bin/python -m pip install --no-deps -e .
+.venv/bin/python -m pip install -e '.[test]'
 .venv/bin/python -m unittest discover -s tests -v
 ```
 

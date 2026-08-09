@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="200" height="200" role="img" aria-label="Mothership Router emblem: four paths leave a gate and only one of them is open">
+  <defs>
+    <linearGradient id="lbg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#0d1733"/>
+      <stop offset="100%" stop-color="#101d40"/>
+    </linearGradient>
+    <radialGradient id="lglow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#5fd3d3" stop-opacity="0.5"/>
+      <stop offset="100%" stop-color="#5fd3d3" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+
+  <circle cx="100" cy="100" r="94" fill="url(#lbg)" stroke="#2c4a86" stroke-width="2"/>
+  <circle cx="100" cy="100" r="80" fill="none" stroke="#1b2f5c" stroke-width="1"/>
+
+  <!-- digest ring: the approval is bound to this circumference -->
+  <circle cx="100" cy="100" r="80" fill="none" stroke="#4a90d9" stroke-width="2.5"
+          stroke-dasharray="14 7 3 7 9 7 20 7 5 7" opacity="0.85"/>
+
+  <circle cx="100" cy="100" r="46" fill="url(#lglow)"/>
+
+  <!-- three refused exits -->
+  <g stroke="#e06a6a" stroke-width="3.5" stroke-linecap="round" opacity="0.75">
+    <line x1="100" y1="82" x2="100" y2="44"/>
+    <line x1="82" y1="100" x2="44" y2="100"/>
+    <line x1="100" y1="118" x2="100" y2="156"/>
+  </g>
+  <g stroke="#e06a6a" stroke-width="3.5" stroke-linecap="round" opacity="0.9">
+    <line x1="93" y1="37" x2="107" y2="51"/><line x1="107" y1="37" x2="93" y2="51"/>
+    <line x1="37" y1="93" x2="51" y2="107"/><line x1="51" y1="93" x2="37" y2="107"/>
+    <line x1="93" y1="149" x2="107" y2="163"/><line x1="107" y1="149" x2="93" y2="163"/>
+  </g>
+
+  <!-- the one open exit -->
+  <line x1="118" y1="100" x2="152" y2="100" stroke="#5fd3d3" stroke-width="4" stroke-linecap="round"/>
+  <path d="M 148 92 L 164 100 L 148 108 Z" fill="#5fd3d3"/>
+
+  <!-- the gate itself -->
+  <path d="M 100 74 L 128 100 L 100 126 L 72 100 Z" fill="#1b2f5c" stroke="#4a90d9" stroke-width="2"/>
+  <path d="M 100 86 L 116 100 L 100 114 L 84 100 Z" fill="#0f2f33" stroke="#5fd3d3" stroke-width="1.5"/>
+</svg>

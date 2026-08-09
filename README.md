@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="assets/router-logo.svg" alt="Mothership Router emblem: four paths leave a gate and only one is open" width="150">
+</p>
+
 <h1 align="center">Mothership Router</h1>
 
 <p align="center">
@@ -37,6 +41,10 @@ Most approval systems store "approved: yes" somewhere and then trust it. This on
 Change the registry — add an executor, flip a status from `staged` to `ready`, fix a typo in a capability name — and the digest changes. Every approval carrying the old digest stops matching, and the router falls back to `approval_required`.
 
 **Revocation is not a feature you have to remember to use.** It is what happens by default when the thing you approved is no longer the thing in front of you.
+
+<p align="center">
+  <img src="assets/digest-binding.svg" alt="The same approval against an edited registry: the digest changes and the result falls back to approval_required" width="100%">
+</p>
 
 > 承認を「はい」というフラグで保存すると、対象が変わっても承認だけが生き残る。ここでは承認が**登録簿全体のSHA-256**に紐づくため、登録簿を1文字でも書き換えれば承認は自動的に効かなくなる。**取り消しを覚えておく必要がない。**
 
@@ -202,6 +210,10 @@ On that last point — retry deserves naming. **Retry is not a reliability featu
 ---
 
 ## Where it sits
+
+<p align="center">
+  <img src="assets/composition-pipeline.svg" alt="Workflow Governance Model, Mothership Router, and Mothership as three separate boundaries, each returning to a human" width="100%">
+</p>
 
 ```text
 evidence + task

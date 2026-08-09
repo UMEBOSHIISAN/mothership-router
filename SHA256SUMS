@@ -1,5 +1,5 @@
 27c605dec40ab55605775e30d634fc84854fd86086484b2d2055a7ceea7bdb0b  ./.gitignore
-042f1f9126497f23224216e9d48a7a99cd601d48f1a6b90e0d2656e1bbce4fa3  ./CHANGELOG.md
+965f4d8d6de8e59b8461bdb691c51102d5697e66a142fdf0ecff36305bc9e78b  ./CHANGELOG.md
 59e64753d0a4f15836ab2f4809a92b29ecb3a53e5f7c56a7beb35d0f97d872c3  ./CONTRIBUTING.md
 4a1ab57fbd11d1eaf6dda9d825bb31cf5cd080a4a72ac6536ea2508d3a50215d  ./LICENSE
 58fd0ff8ed9cebfd48948a363c96c06b7d63b6b7b941c3c0e6dbdf76ea49fb4d  ./NEXT.md
@@ -17,9 +17,9 @@ a5758ff6512676bab92be6d5c554bb1b7cb39c22254e7d297ddc198463b20e64  ./examples/rou
 9ab7d2182c4514492b06202ac875182827a4adc0e6d9ad7017f29bb983ebac4b  ./pyproject.toml
 8840c48c5b73915d6df6ddb84def22565a79702d836bd5bcda2085f03ab7efe1  ./src/mothership_router/__init__.py
 ed662a53eb0a651f55af4f32e681e4d6b3b01af6ccc0e79270b17a4c2ffe6e67  ./src/mothership_router/__main__.py
-5ec3b5668f2fe31cf6094f62d75d75fb37d83f7787fc4ed311d02938a7cfe909  ./src/mothership_router/core.py
+b651909c613ff3b48e3c45a7a933919b87481618d466cca5f633bd13e2ccdb25  ./src/mothership_router/core.py
 e8eaada614a8ea50c73898cee5b553b781884ac4cc3cb62702da1039187ce63a  ./src/mothership_router/schema/__init__.py
 273b1def57ec35957750c4979c737480c4cbb7f4db2294993dd5475b54fc673b  ./src/mothership_router/schema/router-manifest.1.0.schema.json
 17c0ae33af1b1217b28720058f01fa34b3195ed8948c4f4db5849d8c8a9536bf  ./suite/mothership-0.2-conformance.json
-3148acb69f3b71ca3585b83f9044da319fe9ff9ca8bd5087319f0902ca49cc8f  ./tests/test_core.py
+79d435e2191a529f4e59d40b6b391b69857dce05f8b3f573ed52b74a05a4ed91  ./tests/test_core.py
 8691153529e9bd737a488df57cd56f1ccc025b701b805b04068f8d4f14a294ae  ./tests/test_mothership_conformance.py

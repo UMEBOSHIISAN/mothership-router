@@ -11,6 +11,8 @@
   ASCII tokens with the same true-end grammar in runtime and JSON Schema.
 - Prefer the explicitly versioned WGM handoff 1.1 while retaining safe 1.0
   recognition under Router's stricter consumer-boundary policy.
+- Reject array or object values in risk and schema-version fields as invalid
+  input instead of raising on otherwise valid JSON.
 
 ## 0.2.0 — 2026-08-08
 

@@ -46,7 +46,7 @@ def advisory_route(
         if handoff_error:
             return _manifest(task_id, capability, "invalid_input", None, None, [handoff_error])
     risk = task.get("risk")
-    if risk not in _RISK or not isinstance(capability, str):
+    if not isinstance(risk, str) or risk not in _RISK or not isinstance(capability, str):
         return _manifest(
             task_id,
             capability,
@@ -82,7 +82,8 @@ def advisory_route(
         and _is_non_path_identifier(row.get("alias"))
         and isinstance(row.get("capabilities"), list)
         and capability in row["capabilities"]
-        and row.get("max_risk") in _RISK
+        and isinstance(row.get("max_risk"), str)
+        and row["max_risk"] in _RISK
         and _RISK[row["max_risk"]] >= _RISK[risk]
         and isinstance(row.get("cost_rank"), int)
         and not isinstance(row["cost_rank"], bool)
@@ -173,7 +174,8 @@ def _validate_wgm_handoff(task: dict[str, object]) -> str | None:
         return "wgm_handoff_contains_unsupported_fields"
     if set(task) != _WGM_HANDOFF_KEYS:
         return "wgm_handoff_requires_all_public_fields"
-    if task.get("schema_version") not in {"1.0", "1.1"}:
+    version = task.get("schema_version")
+    if not isinstance(version, str) or version not in {"1.0", "1.1"}:
         return "wgm_handoff_requires_supported_schema_version"
     if not _is_non_path_identifier(task.get("task_id")):
         return "wgm_handoff_requires_non_path_task_id"

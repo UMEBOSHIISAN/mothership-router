@@ -214,6 +214,29 @@ class RouterTests(unittest.TestCase):
         self.assertIsNone(manifest["task_id"])
         self.assertIsNone(manifest["capability"])
 
+    def test_array_and_object_fields_are_rejected_without_crashing(self):
+        malformed_executor = {
+            "executors": [
+                {
+                    "alias": "local-review",
+                    "status": "ready",
+                    "capabilities": ["review"],
+                    "max_risk": [],
+                    "cost_rank": 1,
+                }
+            ]
+        }
+        cases = (
+            (advisory_route({"capability": "review", "risk": []}, REGISTRY, now=NOW), "invalid_input"),
+            (advisory_route({**WGM_HANDOFF, "schema_version": {}}, REGISTRY, now=NOW), "invalid_input"),
+            (advisory_route(TASK, malformed_executor, now=NOW), "no_ready_executor"),
+        )
+        for manifest, status in cases:
+            with self.subTest(status=status):
+                self.assertEqual(manifest["status"], status)
+                self.assertFalse(manifest["authority_effect"])
+                self.assertFalse(manifest["execution_effect"])
+
 
 if __name__ == "__main__":
     unittest.main()

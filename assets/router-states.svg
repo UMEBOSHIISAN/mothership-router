@@ -1,0 +1,96 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 620" width="1200" height="620" role="img" aria-label="The four router outcomes and the conditions that lead to each">
+  <defs>
+    <linearGradient id="rbg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#0a1024"/>
+      <stop offset="100%" stop-color="#101d40"/>
+    </linearGradient>
+    <marker id="ra" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#4a90d9"/>
+    </marker>
+    <marker id="rr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#e06a6a"/>
+    </marker>
+  </defs>
+  <rect width="1200" height="620" fill="url(#rbg)"/>
+  <g fill="#ffffff" opacity="0.4">
+    <circle cx="90" cy="70" r="1.1"/><circle cx="1120" cy="90" r="1"/><circle cx="600" cy="30" r="1"/>
+    <circle cx="1150" cy="560" r="1.1"/><circle cx="50" cy="540" r="1"/>
+  </g>
+
+  <text x="600" y="46" text-anchor="middle" font-family="ui-sans-serif,-apple-system,Segoe UI,Helvetica,Arial,sans-serif" font-size="25" font-weight="700" fill="#e8eef7">An approval only applies to what it approved.</text>
+  <text x="600" y="73" text-anchor="middle" font-family="ui-sans-serif,-apple-system,Segoe UI,Helvetica,Arial,sans-serif" font-size="13.5" fill="#8fa4c8">承認は「承認した対象」にだけ効く。登録簿が1文字変われば、その承認は自動的に無効になる。</text>
+
+  <g font-family="ui-sans-serif,-apple-system,Segoe UI,Helvetica,Arial,sans-serif">
+    <!-- input -->
+    <rect x="42" y="250" width="192" height="106" rx="10" fill="#132449" stroke="#2c4a86"/>
+    <text x="138" y="282" text-anchor="middle" font-size="14.5" font-weight="700" fill="#e8eef7">TASK.json</text>
+    <text x="138" y="302" text-anchor="middle" font-size="11.5" fill="#8fa4c8">capability + risk</text>
+    <line x1="62" y1="314" x2="214" y2="314" stroke="#2c4a86"/>
+    <text x="138" y="333" text-anchor="middle" font-size="14.5" font-weight="700" fill="#e8eef7">REGISTRY.json</text>
+    <text x="138" y="349" text-anchor="middle" font-size="11.5" fill="#8fa4c8">your local executor list</text>
+
+    <line x1="240" y1="303" x2="286" y2="303" stroke="#4a90d9" stroke-width="2" marker-end="url(#ra)"/>
+
+    <!-- gate 1 -->
+    <g>
+      <path d="M 292 303 L 366 258 L 440 303 L 366 348 Z" fill="#1b2f5c" stroke="#4a90d9"/>
+      <text x="366" y="298" text-anchor="middle" font-size="12" font-weight="600" fill="#cdeaf2">risk</text>
+      <text x="366" y="314" text-anchor="middle" font-size="12" font-weight="600" fill="#cdeaf2">high?</text>
+    </g>
+    <line x1="366" y1="252" x2="366" y2="196" stroke="#e06a6a" stroke-width="2" marker-end="url(#rr)"/>
+    <text x="376" y="228" font-size="11.5" fill="#e0a0a0">yes</text>
+    <rect x="252" y="132" width="228" height="60" rx="9" fill="#2a1218" stroke="#7d2f3a"/>
+    <text x="366" y="157" text-anchor="middle" font-size="13.5" font-weight="700" fill="#ffb3b3">human_review_required</text>
+    <text x="366" y="177" text-anchor="middle" font-size="11" fill="#c98d94">high risk is never auto-routed</text>
+
+    <line x1="446" y1="303" x2="492" y2="303" stroke="#4a90d9" stroke-width="2" marker-end="url(#ra)"/>
+    <text x="452" y="294" font-size="11.5" fill="#7f93b8">no</text>
+
+    <!-- gate 2 -->
+    <g>
+      <path d="M 498 303 L 578 253 L 658 303 L 578 353 Z" fill="#1b2f5c" stroke="#4a90d9"/>
+      <text x="578" y="298" text-anchor="middle" font-size="12" font-weight="600" fill="#cdeaf2">any entry</text>
+      <text x="578" y="314" text-anchor="middle" font-size="12" font-weight="600" fill="#cdeaf2">status: ready?</text>
+    </g>
+    <line x1="578" y1="359" x2="578" y2="414" stroke="#e06a6a" stroke-width="2" marker-end="url(#rr)"/>
+    <text x="588" y="390" font-size="11.5" fill="#e0a0a0">no</text>
+    <rect x="464" y="418" width="228" height="60" rx="9" fill="#2a1218" stroke="#7d2f3a"/>
+    <text x="578" y="443" text-anchor="middle" font-size="13.5" font-weight="700" fill="#ffb3b3">no_ready_executor</text>
+    <text x="578" y="463" text-anchor="middle" font-size="11" fill="#c98d94">registries start with nothing ready</text>
+
+    <line x1="664" y1="303" x2="710" y2="303" stroke="#4a90d9" stroke-width="2" marker-end="url(#ra)"/>
+    <text x="668" y="294" font-size="11.5" fill="#7f93b8">yes</text>
+
+    <!-- gate 3 -->
+    <g>
+      <path d="M 716 303 L 812 243 L 908 303 L 812 363 Z" fill="#1b2f5c" stroke="#4a90d9"/>
+      <text x="812" y="290" text-anchor="middle" font-size="11.5" font-weight="600" fill="#cdeaf2">approval matches</text>
+      <text x="812" y="306" text-anchor="middle" font-size="11.5" font-weight="600" fill="#cdeaf2">alias + digest +</text>
+      <text x="812" y="322" text-anchor="middle" font-size="11.5" font-weight="600" fill="#cdeaf2">human + not expired?</text>
+    </g>
+    <line x1="812" y1="369" x2="812" y2="414" stroke="#e06a6a" stroke-width="2" marker-end="url(#rr)"/>
+    <text x="822" y="394" font-size="11.5" fill="#e0a0a0">no</text>
+    <rect x="698" y="418" width="228" height="60" rx="9" fill="#2c2213" stroke="#7d6320"/>
+    <text x="812" y="443" text-anchor="middle" font-size="13.5" font-weight="700" fill="#ffe0a0">approval_required</text>
+    <text x="812" y="463" text-anchor="middle" font-size="11" fill="#c9b183">a candidate exists — nothing more</text>
+
+    <line x1="914" y1="303" x2="960" y2="303" stroke="#4a90d9" stroke-width="2" marker-end="url(#ra)"/>
+    <text x="918" y="294" font-size="11.5" fill="#7f93b8">yes</text>
+    <rect x="966" y="270" width="192" height="66" rx="9" fill="#0f2f33" stroke="#2f7d7d"/>
+    <text x="1062" y="296" text-anchor="middle" font-size="13.5" font-weight="700" fill="#9de8e8">approved_dry_run</text>
+    <text x="1062" y="316" text-anchor="middle" font-size="11" fill="#6fb5b5">an inspectable JSON manifest</text>
+
+    <!-- terminal note -->
+    <line x1="1062" y1="342" x2="1062" y2="392" stroke="#5fd3d3" stroke-width="2" marker-end="url(#ra)"/>
+    <rect x="944" y="396" width="236" height="86" rx="9" fill="#132449" stroke="#2c4a86" stroke-dasharray="5 4"/>
+    <text x="1062" y="422" text-anchor="middle" font-size="12.5" font-weight="700" fill="#e8eef7">You act. Manually. Elsewhere.</text>
+    <text x="1062" y="442" text-anchor="middle" font-size="11" fill="#8fa4c8">this package has no API that</text>
+    <text x="1062" y="457" text-anchor="middle" font-size="11" fill="#8fa4c8">launches a command — not even</text>
+    <text x="1062" y="472" text-anchor="middle" font-size="11" fill="#8fa4c8">after a valid approval</text>
+
+    <!-- revocation callout -->
+    <rect x="42" y="508" width="1116" height="72" rx="10" fill="#180f22" stroke="#6b4a8a"/>
+    <text x="66" y="536" font-size="14" font-weight="700" fill="#d8bff0">Edit the registry — even by one character — and every approval bound to it stops working.</text>
+    <text x="66" y="560" font-size="12" fill="#a894c0">Approval carries the SHA-256 digest of the whole registry. Add an executor, flip a status, fix a typo: the digest changes, the match fails, and the result falls back to approval_required. Revocation is not a feature you have to remember to use. 登録簿を書き換えた瞬間、それに紐づく承認は自動的に失効する。取り消しを覚えておく必要がない。</text>
+  </g>
+</svg>

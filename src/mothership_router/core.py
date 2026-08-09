@@ -191,13 +191,10 @@ def _validate_wgm_handoff(task: dict[str, object]) -> str | None:
 
 
 def _is_non_path_identifier(value: object) -> bool:
-    return (
-        isinstance(value, str)
-        and bool(value)
-        and not any(
-            character in "/\\"
-            or ord(character) < 0x20
-            or ord(character) == 0x7F
-            for character in value
-        )
-    )
+    if not isinstance(value, str) or not value or not value.isascii():
+        return False
+    if not value[0].isalnum():
+        return False
+    if len(value) >= 2 and value[0].isalpha() and value[1] == ":":
+        return False
+    return all(character.isalnum() or character in "._:-" for character in value[1:])

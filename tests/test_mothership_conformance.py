@@ -120,6 +120,27 @@ class MothershipConformanceTests(unittest.TestCase):
         self.assertEqual(actual, expected)
         self.validator.validate(actual)
 
+    def test_owner_schema_rejects_nonportable_identifiers_and_true_end_drift(self):
+        example = json.loads((ROOT / "examples/router-manifest.json").read_text(encoding="utf-8"))
+        unsafe = (
+            "private/path",
+            r"private\path",
+            "private\n",
+            "private\x85value",
+            "private\u2028value",
+            "C:private",
+            "日本語",
+        )
+        for value in unsafe:
+            for field in ("task_id", "capability", "recommended_alias"):
+                with self.subTest(field=field, value=value):
+                    self.assertFalse(self.validator.is_valid({**example, field: value}))
+            with self.subTest(field="reasons", value=value):
+                self.assertFalse(self.validator.is_valid({**example, "reasons": [value]}))
+        self.assertFalse(
+            self.validator.is_valid({**example, "registry_sha256": "0" * 64 + "\n"})
+        )
+
     def test_cli_is_canonical_and_errors_are_fixed_and_path_free(self):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)

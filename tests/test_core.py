@@ -190,7 +190,13 @@ class RouterTests(unittest.TestCase):
             "../private.json",
             "private/path.json",
             "private\nvalue",
+            "private\n",
             "private\x7fvalue",
+            "private\x85value",
+            "private\x9bvalue",
+            "private\u2028value",
+            "C:private.json",
+            "日本語",
         )
 
     def test_invalid_identity_values_are_null_not_stringified(self):

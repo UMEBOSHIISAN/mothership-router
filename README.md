@@ -42,6 +42,9 @@ When `schema_version` identifies a WGM handoff, Router requires the complete
 public field set and rejects every unknown field. This prevents embedded
 credentials, prompts, local-path fields, path-bearing public identifiers, or
 claimed execution permission from being silently carried across the boundary.
+Those public identifiers use one portable ASCII token grammar: an alphanumeric
+first character followed by alphanumerics, `.`, `_`, `:`, or `-`, with
+drive-relative `X:` prefixes rejected.
 
 ## Input contract
 

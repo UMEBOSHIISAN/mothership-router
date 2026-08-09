@@ -7,7 +7,8 @@
 - Package the owner JSON Schema and add Mothership 0.2 conformance evidence.
 - Emit canonical compact CLI JSON and fixed, path-free input errors.
 - Correct clean-environment test setup and refresh tracked source checksums.
-- Reject path-bearing WGM identifiers and executor aliases without echoing private values.
+- Define WGM identifiers, executor aliases, and manifest reasons as portable
+  ASCII tokens with the same true-end grammar in runtime and JSON Schema.
 
 ## 0.2.0 — 2026-08-08
 

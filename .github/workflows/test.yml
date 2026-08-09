@@ -1,0 +1,41 @@
+name: test
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  unit:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ["3.12", "3.13"]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+      - run: python -m pip install --upgrade pip
+      - run: python -m pip install -e ".[test]"
+      - run: PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=src python -m unittest discover -s tests -v
+
+  cli:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: python -m pip install --upgrade pip
+      - run: python -m pip install -e ".[test]"
+      # A fresh clone must refuse to recommend anything: the shipped registry
+      # holds only a staged entry, so this has to print no_ready_executor.
+      - name: a fresh clone recommends nothing
+        run: |
+          set -euo pipefail
+          out="$(PYTHONPATH=src python -m mothership_router examples/task.json examples/registry.json)"
+          echo "$out"
+          echo "$out" | python -c 'import json,sys; d=json.load(sys.stdin); assert d["status"]=="no_ready_executor", d["status"]; assert d["authority_effect"] is False; assert d["execution_effect"] is False'

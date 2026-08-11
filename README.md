@@ -122,7 +122,7 @@ git clone https://github.com/UMEBOSHIISAN/mothership-router.git
 cd mothership-router
 python3 -m venv .venv
 .venv/bin/python -m pip install -e '.[test]'
-PYTHONPATH=src .venv/bin/python -m unittest discover -s tests -v  # 19 tests
+PYTHONPATH=src .venv/bin/python -m unittest discover -s tests -v  # 20 tests
 PYTHONPATH=src .venv/bin/python -m mothership_router examples/task.json examples/registry.json
 ```
 
@@ -232,7 +232,7 @@ Mothership contracts / separately configured local tools
 Use [Workflow Governance Model](https://github.com/UMEBOSHIISAN/workflow-governance-model) first when a workflow needs evidence, claim strength, approval, and receipt checks. Use Mothership Router after that review, when you need a deterministic candidate from a local registry. [Mothership](https://github.com/UMEBOSHIISAN/mothership) supplies the portable environment contracts and diagnostics around both.
 
 See [the composition walkthrough](docs/composition.md) for the local-file-only
-WGM 0.2.x → Mothership Router 0.3.x handoff.
+WGM 0.3.x → Mothership Router 0.3.x handoff.
 
 ## Status values
 

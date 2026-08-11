@@ -36,8 +36,8 @@ credential, or convert a recommendation into execution authority.
 
 | Producer | Contract | Consumer | Supported |
 | --- | --- | --- | --- |
-| WGM 0.2.x | `governance-handoff` 1.1 | Mothership Router 0.3.x | Yes, preferred portable contract |
-| WGM 0.2.x | `governance-handoff` 1.0 | Mothership Router 0.3.x | Yes, with Router's stricter consumer policy |
+| WGM 0.3.x | `governance-handoff` 1.1 | Mothership Router 0.3.x | Yes, preferred portable contract |
+| WGM 0.3.x | `governance-handoff` 1.0 | Mothership Router 0.3.x | Yes, with Router's stricter consumer policy |
 | Arbitrary JSON | Unknown fields or embedded authority | Mothership Router | Rejected |
 | Mothership Router 0.3.x | `router-manifest` 1.0 | Mothership 0.2.x suite | Yes, shape/version conformance |
 
